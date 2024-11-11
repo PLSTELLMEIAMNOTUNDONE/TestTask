@@ -25,12 +25,13 @@ public class CommodityController {
 
     public static final String APPLICATION_JSON = "application/json";
 
-    @GetMapping(value = "/", consumes = APPLICATION_JSON, produces = APPLICATION_JSON)
+    @GetMapping(value = "/get", consumes = APPLICATION_JSON, produces = APPLICATION_JSON)
     public List<Commodity> getAll() {
+        log.info("searching for all commodities");
         return service.getAllCommodities().stream().toList();
     }
 
-    @GetMapping(value = "/{id}", consumes = APPLICATION_JSON, produces = APPLICATION_JSON)
+    @GetMapping(value = "/{id}/get", consumes = APPLICATION_JSON, produces = APPLICATION_JSON)
     public Commodity get(
             @PathVariable("id") Long id
     ) {

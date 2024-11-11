@@ -22,25 +22,27 @@ public class CommodityService {
     }
 
     public long createCommodity(CommodityDto commodityDto) {
-        if(commodityRepository.has(commodityDto.getId())) {
+        if (commodityRepository.existsById(commodityDto.getId())) {
             throw new BadRequestException("такой товар уже существует");
         }
         return commodityRepository.save(commodityDto);
     }
 
     public List<Commodity> getCommoditiesSuch(CommodityDto commodityDto) {
-        return commodityRepository.findByConstraint(commodityLikeDtoPredicate(commodityDto));
+        return commodityRepository.findAll().stream()
+                .filter(commodityLikeDtoPredicate(commodityDto))
+                .toList();
     }
 
     private Predicate<Commodity> commodityLikeDtoPredicate(CommodityDto commodityDto) {
         return commodity ->
-                commodityDto.getIsAvailable() == null || commodity.isAvailable() == commodityDto.getIsAvailable()
+                (commodityDto.getIsAvailable() == null || commodity.isAvailable() == commodityDto.getIsAvailable())
                         &&
-                        commodityDto.getName() == null || commodity.getName().equals(commodityDto.getName())
+                        (commodityDto.getName() == null || commodity.getName().equals(commodityDto.getName()))
                         &&
-                        commodityDto.getDescription() == null || commodity.getDescription().equals(commodityDto.getDescription())
+                        (commodityDto.getDescription() == null || commodity.getDescription().equals(commodityDto.getDescription()))
                         &&
-                        commodityDto.getPrice() == null || commodity.getPrice().equals(commodityDto.getPrice());
+                        (commodityDto.getPrice() == null || commodity.getPrice().equals(commodityDto.getPrice()));
     }
 
     public Commodity getById(Long id) {
@@ -52,7 +54,7 @@ public class CommodityService {
     }
 
     public void deleteById(Long id) {
-        commodityRepository.delete(id);
+        commodityRepository.deleteById(id);
     }
 
     public long update(CommodityDto commodityDto) {
@@ -63,16 +65,16 @@ public class CommodityService {
     }
 
     private void update(CommodityDto commodityDto, Commodity commodity) {
-        if(commodityDto.getName() != null) {
+        if (commodityDto.getName() != null) {
             commodity.setName(commodityDto.getName());
         }
-        if(commodityDto.getDescription() != null) {
+        if (commodityDto.getDescription() != null) {
             commodity.setDescription(commodityDto.getDescription());
         }
-        if(commodityDto.getPrice() != null) {
+        if (commodityDto.getPrice() != null) {
             commodity.setPrice(commodityDto.getPrice());
         }
-        if(commodityDto.getIsAvailable() != null) {
+        if (commodityDto.getIsAvailable() != null) {
             commodity.setAvailable(commodityDto.getIsAvailable());
         }
     }
